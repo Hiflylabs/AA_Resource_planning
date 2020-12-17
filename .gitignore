@@ -2,3 +2,4 @@ data/*
 data_bkp/*
 log/*
 **/__pycache__/
+env/*
