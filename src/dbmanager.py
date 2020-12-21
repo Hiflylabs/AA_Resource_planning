@@ -2,6 +2,11 @@ import pandas as pd
 import datetime as dt
 import os
 
+from src.log import create_logger
+
+
+logger = create_logger()
+
 
 def write_plans(plans, db_path, db_name):
 	"""Appends the plans to the database.
@@ -20,14 +25,26 @@ def write_plans(plans, db_path, db_name):
 	# If the database already exists, append the new data.
 	# The previous entries for the actual date will be overwritten.
 	if db_name in os.listdir(db_path):
-		database_old = pd.read_excel(db_full_name)
+
+		try:
+			database_old = pd.read_excel(db_full_name)
+		except Exception as e:
+			logger.error('Can\'t read database.')
+			raise
+			
 		database_old = database_old[database_old['Terv dátum'] < pd.to_datetime(dt.date.today())]
-		database_full = pd.concat([database_old, plans])
+
+		try:
+			database_full = pd.concat([database_old, plans])
+		except:
+			logger.error('Can\'t concatenate new data to the database.')
+			raise
+
 		database_old.to_excel(os.path.join(db_path, 'backup', 'database_bkp.xlsx'))
-		database_full.to_excel(db_full_name)
+		database_full.to_excel(db_full_name, index=False)
 
 	else:
-		plans.to_excel(db_full_name)
+		plans.to_excel(db_full_name, index=False)
 
 
 def read_database(db_path, db_name):
@@ -42,4 +59,9 @@ def read_database(db_path, db_name):
 		
 	"""
 
-	return pd.read_excel(os.path.join(db_path, db_name))
+	try:
+		return pd.read_excel(os.path.join(db_path, db_name))
+
+	except Exception as e:
+		logger.error('Can\'t read database.')
+		raise

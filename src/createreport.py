@@ -2,6 +2,8 @@ import pandas as pd
 import datetime as dt
 import re
 
+from pdb import set_trace
+
 
 def create_report(database):
 	"""Creates a resource report based on the most recent plans.
@@ -19,11 +21,12 @@ def create_report(database):
 		database.sort_values(['Hónap', 'Ember', 'Projekt', 'Terv dátum'])
 		.drop_duplicates(['Ember', 'Projekt', 'Hónap'], keep='last')
 	)
+	set_trace()
 	# Keep only the current and the upcoming months
 	report = report[report['Hónap'] > (report['Terv dátum'] - dt.timedelta(days=30))]
 
 	# Filter and transform columns
-	report = report[['Ember', 'Projekt', 'Év', 'Hónap', 'FTE', 'Terv dátum']]
+	report = report[['Ember', 'Projekt', 'Hónap', 'FTE', 'Terv dátum']]
 	report['Év'] = report['Hónap'].dt.year
 	report['Hónap'] = report['Hónap'].dt.month
 	report['FTE'] = report['FTE'].round(3)

@@ -9,6 +9,10 @@ import os
 from src.readplans import read_plans
 from src.dbmanager import write_plans, read_database
 from src.createreport import create_report
+from src.log import create_logger
+
+
+logger = create_logger()
 
 try:
 	path = './data'
@@ -26,6 +30,8 @@ try:
 	database = read_database(db_path, db_name)
 	report = create_report(database)
 	report.to_excel(report_name)
+	
+	logger.info('The reporting process finished successfully.')
 
 except Exception as e:
-	print(e)
+	logger.error(e)
