@@ -4,8 +4,6 @@ import os
 
 from src.log import create_logger
 
-from pdb import set_trace
-
 
 logger = create_logger()
 
